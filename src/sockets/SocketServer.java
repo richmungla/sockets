@@ -16,6 +16,9 @@ import java.util.HashMap;
  */
 public class SocketServer {
     
+    static DataInputStream din;
+    static DataOutputStream dout;
+    
     public static HashMap<String, Object> stringSplit(String data){
     
         data = data.substring(1, data.length()-1);
@@ -26,89 +29,38 @@ public class SocketServer {
             String[] entry = pair.split("=");
             map.put(entry[0].trim(), entry[1].trim());
         }
-        
-//        System.out.println(map);
+
         return map;
     }
     
     public static void main(String args[]) throws Exception{
-        
-        InetAddress inetAddress=InetAddress.getByName("localhost");
-        
-        ServerSocket ss = new ServerSocket();
-        SocketAddress endPoint;
-        
-        int port = 10;      
-        
-        ss.setReuseAddress(true);
-        
-        while(!ss.isBound()){        
-        endPoint=new InetSocketAddress(inetAddress, port); 
-        try{
-        ss.bind(endPoint);
-        }catch(BindException e){
-            System.out.println("Port :"+ port +" in use");
-        }
-//        System.out.println(port);
-        port++;   
-        
-        }    
-        
-//        System.out.print(ss);
-        
-        Socket s = ss.accept();
-        
-//        if(!s.isInputShutdown()){        
-//        System.out.println(ss.getReuseAddress());
-        
-        
                
-//        Socket s = ss.accept();
-//        Random rand = new Random();
-//   
-        DataInputStream din = new DataInputStream(s.getInputStream());
-        DataOutputStream dout = new DataOutputStream(s.getOutputStream());
+        startServer(3000, 3005);     
+ 
+    }
+    
+    public static Socket startServer(int portStart, int portEnd) throws IOException{
+        Socket sock = new Socket();
+//        initialize server socket 
+        ServerSocket ss = new ServerSocket();
+        int port = portStart;
+//           check if socket is bound (Will not be at first)
+            while(!ss.isBound()){
+                try{
+                    ServerSocket serverSocket = new ServerSocket(port);
+                
+                    ss = serverSocket ;                 
+              
+                }catch(BindException be){
+                    System.out.println("Port: "+ port+" in use");
+                     port++;
+                }
+               
+            }
+//            the port in use
+            System.out.println(port);
         
-        HashMap map = stringSplit(din.readUTF());
-        System.out.println(map.get("Name"));
-//        }
-        
-        
-//        String str = din.readUTF();
-//        int port = 0;
-//        if(str.equals("initial")){
-//            port = rand.nextInt(6000);
-//            dout.writeInt(port);   
-//            
-////            s.close();
-////        ss.close();
-//        
-//        ss = new ServerSocket(port);
-////        s = ss.accept();
-//        
-//       
-//        }
-//         System.out.println(din.readUTF());
-        
-//        
-//        DataOutputStream dout = new DataOutputStream(s.getOutputStream());
-//        
-//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-//        
-//        String str = "", str2 = "";
-//        
-//        while(!str.equals("stop")){
-//            str = din.readUTF();
-//            System.out.println("client says: " + str);
-//            str2 = br.readLine();
-//            dout.writeUTF(str2);
-//            dout.flush();
-//                 
-//        }
-//        
-//        din.close();
-//        s.close();
-//        ss.close();
+     return sock;
     }
     
 }

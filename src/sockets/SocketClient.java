@@ -13,40 +13,23 @@ import java.util.HashMap;
  * @author richm
  */
 public class SocketClient {
-    public static void main(String args[]) throws Exception{
-                
-        int port = 1;
+        
+    public Socket connectToServer(int portStart, int portEnd){
+        int port = portStart;
         Socket sock = new Socket();
-        while(port < 100){
+        while(port < portEnd){
             try{
                 Socket s = new Socket("localhost", port);
                 if(s.isConnected()){
+                    System.out.println("Connected to Server on port "+port);
                     sock = s;
               break;
             }
             }catch(IOException e){
                 System.out.println("remote host not listening on port: "+ port);
-            }
-            
-//            System.out.println(port);
+            }            
             port++;
-        }
-        
-       
-       
-//       s.connect("localhost", port);
-       
-       HashMap<String, Object> stuff = new HashMap<String, Object>();
-       
-       stuff.put("ID", 1);
-       stuff.put("Name", "Ben 10");
-       
-       String name = stuff.toString();     
-                
-        DataInputStream din = new DataInputStream(sock.getInputStream());
-        DataOutputStream dout = new DataOutputStream(sock.getOutputStream());
-        
-        dout.writeUTF(name);
-//      
+        }        
+        return sock;
     }
 }
